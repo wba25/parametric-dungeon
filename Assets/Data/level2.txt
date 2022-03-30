@@ -1,0 +1,1 @@
+{"abduru":"adasds","neighbors":["a","b","c"]}

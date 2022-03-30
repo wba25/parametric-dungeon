@@ -1,0 +1,1 @@
+{"edges":[{"node":"a","neighbors":["b","c"]},{"node":"b","neighbors":["a", "c"]},{"node":"c","neighbors":["a"]}],"nodes":[{"node":"a","data":""},{"node":"b","data":""},{"node":"c","data":""}]}

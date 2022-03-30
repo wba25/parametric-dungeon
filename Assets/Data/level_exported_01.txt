@@ -1,0 +1,1 @@
+{"nodes":[{"node":1,"data":""},{"node":2,"data":""},{"node":1638822713709,"data":""}],"edges":[{"node":1,"neighbors":[2,1638822713709]},{"node":2,"neighbors":[1]},{"node":1638822713709,"neighbors":[1]}]}

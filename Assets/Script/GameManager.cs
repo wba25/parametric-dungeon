@@ -1,0 +1,190 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+public class GameManager : Singleton<GameManager>
+{
+    public Camera cam;
+    [SerializeField] private BoardManager boardScript;
+    
+    //private Vertex<(int x, int y)>[,] graph;
+    private Dictionary<string, Vertex<(int x, int y)>> graph = new Dictionary<string, Vertex<(int x, int y)>>();
+    public TextAsset jsonLevel;
+
+    void Awake()
+    {
+        InitGame();
+    }
+
+    void Start()
+    {
+        
+    }
+
+    void InitGame()
+    {
+        //Level levelGraph = JsonUtility.FromJson<Level>(jsonLevel.text);
+        Level levelGraph = Level.CreateFromJSON(jsonLevel.text);
+        CreateLevel(levelGraph);
+        /*
+        boardScript.SetupRoom((x, y));
+        */
+    }
+    
+    void CreateLevel(Level levelGraph)
+    {
+        // Mapeai os vertices
+        foreach (RawNode n in levelGraph.nodes)
+        {
+            graph.Add(
+                n.node,
+                new Vertex<(int x, int y)>((0, 0))
+            );
+        }
+
+        // Mapeai as portas
+        foreach (RawEdge edge in levelGraph.edges)
+        {
+            graph[edge.node].neighbors = new List<Vertex<(int x, int y)>>();
+            foreach (string key in edge.neighbors)
+            {
+                Vertex<(int x, int y)> neighbor = graph[key];
+                if (neighbor != null)
+                    graph[edge.node].neighbors.Add(neighbor);
+            }
+        }
+        Debug.Log("Numero de vertices eh: " + graph.Count);    
+        
+        // Verificar se é um grafo planar
+
+        // Obtem o posicionamento das salas
+        Vertex<(int x, int y)>[,] map = GetEmbedOrthogonalGraph(graph);
+        Debug.Log("Tamanho do mapa final " + map.GetLength(0) + " por " + map.GetLength(1));      
+        // Convete cada vertice numa sala
+        for(int i = 0; i < map.GetLength(0); i++)
+        {
+            for(int j = 0; j < map.GetLength(1); j++)
+            {
+                Debug.Log("(" + i + " , " + j +") = " + map[i, j]);
+                if (map[i, j] != null)
+                {
+                    var hasGate = new Dictionary<TileDirection, bool>();
+                    hasGate.Add(
+                        TileDirection.UP,
+                        j < map.GetLength(1) - 1 ? map[i, j + 1] != null : false
+                    );
+                    hasGate.Add(
+                        TileDirection.DOWN,
+                        j > 0 ? map[i, j - 1] != null : false
+                    );
+                    hasGate.Add(
+                        TileDirection.RIGHT,                        
+                        i < map.GetLength(0) - 1 ? map[i + 1, j] != null : false
+                    );
+                    hasGate.Add(
+                        TileDirection.LEFT,
+                        i > 0 ? map[i - 1, j] != null : false
+                    );
+
+                    boardScript.SetupRoom(
+                        (i, j),
+                        hasGate
+                    );
+                }
+            }
+        }
+    }
+
+    // Estrategia para desenho de grafo planar ortogonal de Storer
+    Vertex<(int x, int y)>[,] GetEmbedOrthogonalGraph(Dictionary<string, Vertex<(int x, int y)>> G)
+    {
+        Vertex<(int x, int y)>[,] grid = new Vertex<(int x, int y)>[G.Count, G.Count];
+        // Segmentação dos vértices
+        for (int i = 0; i < G.Count; i++)
+        {
+            var element = G.ElementAt(i);
+            var v = element.Value;
+            v.data = (0, i);
+            Debug.Log("Vertice " + i + " seguimentado");
+        }
+
+        // Segmentação de arestas
+        (int v, int w) [] markedEdges = new (int v, int w) [] {};
+        var poorVisibilityGraph = new Dictionary<string, Vertex<(int x, int y)>>(G);
+        poorVisibilityGraph.Remove(poorVisibilityGraph.Keys.First());
+        poorVisibilityGraph.Remove(poorVisibilityGraph.Keys.Last());
+        bool shouldRunOnLimits = true;
+
+        do
+        {
+            var minorDegreeVertex = poorVisibilityGraph.Where(
+                v => v.Value.neighbors.Count == poorVisibilityGraph.Min(x => x.Value.neighbors.Count)
+            ).FirstOrDefault();
+            Debug.Log("For each edge in " + minorDegreeVertex.Value.data);
+
+            if (minorDegreeVertex.Value != null)
+            {
+                // Para cada aresta
+                var neighbors = minorDegreeVertex.Value.neighbors;
+                foreach (var neighbor in neighbors)
+                {
+                    int v = minorDegreeVertex.Value.data.y;
+                    int w = neighbor.data.y;
+                    if (markedEdges.Contains((v, w)) || markedEdges.Contains((w, v)))
+                        continue;
+                    
+                    int x = Math.Max(GetNextX(v, grid), GetNextX(w, grid));
+                    // Add pontos no grid
+                    grid[x, v] = new Vertex<(int x, int y)>((x, v));
+                    grid[x, w] = new Vertex<(int x, int y)>((x, w));
+                    // Add uma adjacencia entre os pontos
+                    grid[x, v].neighbors = new List<Vertex<(int x, int y)>>();
+                    grid[x, v].neighbors.Add(grid[x, w]);
+                    grid[x, w].neighbors = new List<Vertex<(int x, int y)>>();
+                    grid[x, w].neighbors.Add(grid[x, v]);
+
+                    markedEdges.Append((v, w));
+                }
+                
+                poorVisibilityGraph.Remove(minorDegreeVertex.Key);
+            }
+            
+            if (poorVisibilityGraph.Count == 0 && shouldRunOnLimits)
+            {
+                shouldRunOnLimits = false;
+                var first = G.First();
+                var last = G.Last();
+                Debug.Log(first.Value);
+                Debug.Log(last.Value);
+                poorVisibilityGraph.Add(
+                    first.Key,
+                    first.Value
+                );
+                poorVisibilityGraph.Add(
+                    last.Key,
+                    last.Value
+                );
+                /*
+                */
+            }
+        } while (poorVisibilityGraph.Count > 1);
+
+        // Adiciona os vertices das pontas
+
+        return grid;
+    }
+
+    int GetNextX(int vertex, Vertex<(int x, int y)>[,] grid)
+    {
+        int lastIndex = 0;
+        while (grid[lastIndex, vertex] != null)
+        {
+            // TODO: verificar se (lastIndex, vertex) cruza aresta. Pra cima ou baixo?
+            // tem que pecorrer ate o fim, para o caso de haver intermediarios vazios
+            lastIndex++;
+        }
+        return lastIndex;
+    }
+}

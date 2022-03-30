@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a162a4d9bffce454ea623a8f11c7215c, type: 3}
+  m_Name: Corner
+  m_EditorClassIdentifier: 
+  size: 4
+  tiles:
+  - offsetX: -0.5
+    offsetY: 0.5
+    prefab: {fileID: 51283371683520577, guid: 82126575ffd3de148901d8185f11c52a, type: 3}
+    direction: 0
+  - offsetX: 0.5
+    offsetY: -0.5
+    prefab: {fileID: 4195909078875987746, guid: 7a309d300a0eb8c47a3635ed6ce8570e, type: 3}
+    direction: 1
+  - offsetX: 0.5
+    offsetY: 0.5
+    prefab: {fileID: 1399758524354228944, guid: 00841f8bf20f034498f0820ca9fb1f93, type: 3}
+    direction: 2
+  - offsetX: -0.5
+    offsetY: -0.5
+    prefab: {fileID: 2004639566296591797, guid: 34978438f2d26ef409e4296293f5d3bf, type: 3}
+    direction: 3

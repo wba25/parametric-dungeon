@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a162a4d9bffce454ea623a8f11c7215c, type: 3}
+  m_Name: Wall
+  m_EditorClassIdentifier: 
+  size: 2
+  tiles:
+  - offsetX: 0
+    offsetY: 0.5
+    prefab: {fileID: 6829549479949879700, guid: fed846d762300bf4bbebaddb48f62c67, type: 3}
+    direction: 0
+  - offsetX: 0
+    offsetY: -0.5
+    prefab: {fileID: 3014457054917615035, guid: 17575c542dc17e54f9d9299491def01d, type: 3}
+    direction: 1
+  - offsetX: 0.5
+    offsetY: 0
+    prefab: {fileID: 2127746672823373019, guid: e895b51d38287e5488e12efd9263f763, type: 3}
+    direction: 2
+  - offsetX: -0.5
+    offsetY: 0
+    prefab: {fileID: 9157362723363972355, guid: 381b54257fb3f954f9a43eae2432eda3, type: 3}
+    direction: 3
