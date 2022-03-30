@@ -54,20 +54,17 @@ public class GameManager : Singleton<GameManager>
                 if (neighbor != null)
                     graph[edge.node].neighbors.Add(neighbor);
             }
-        }
-        Debug.Log("Numero de vertices eh: " + graph.Count);    
+        }  
         
         // Verificar se é um grafo planar
 
         // Obtem o posicionamento das salas
         Vertex<(int x, int y)>[,] map = GetEmbedOrthogonalGraph(graph);
-        Debug.Log("Tamanho do mapa final " + map.GetLength(0) + " por " + map.GetLength(1));      
         // Convete cada vertice numa sala
         for(int i = 0; i < map.GetLength(0); i++)
         {
             for(int j = 0; j < map.GetLength(1); j++)
             {
-                Debug.Log("(" + i + " , " + j +") = " + map[i, j]);
                 if (map[i, j] != null)
                 {
                     var hasGate = new Dictionary<TileDirection, bool>();
@@ -107,7 +104,6 @@ public class GameManager : Singleton<GameManager>
             var element = G.ElementAt(i);
             var v = element.Value;
             v.data = (0, i);
-            Debug.Log("Vertice " + i + " seguimentado");
         }
 
         // Segmentação de arestas
@@ -122,8 +118,7 @@ public class GameManager : Singleton<GameManager>
             var minorDegreeVertex = poorVisibilityGraph.Where(
                 v => v.Value.neighbors.Count == poorVisibilityGraph.Min(x => x.Value.neighbors.Count)
             ).FirstOrDefault();
-            Debug.Log("For each edge in " + minorDegreeVertex.Value.data);
-
+            
             if (minorDegreeVertex.Value != null)
             {
                 // Para cada aresta
@@ -156,8 +151,6 @@ public class GameManager : Singleton<GameManager>
                 shouldRunOnLimits = false;
                 var first = G.First();
                 var last = G.Last();
-                Debug.Log(first.Value);
-                Debug.Log(last.Value);
                 poorVisibilityGraph.Add(
                     first.Key,
                     first.Value
