@@ -18,7 +18,7 @@ public class Level
 public class RawNode
 {
   public string node;
-  public string data;
+  public List<NodeData> data;
 }
 
 [Serializable]
@@ -26,4 +26,12 @@ public class RawEdge
 {
   public string node;
   public List<string> neighbors;
+}
+
+[Serializable]
+public class NodeData
+{
+  public string key;
+  public int quantity;
+  public string type;
 }

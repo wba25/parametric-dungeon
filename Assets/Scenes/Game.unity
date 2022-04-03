@@ -320,6 +320,10 @@ PrefabInstance:
       value: GameManager
       objectReference: {fileID: 0}
     - target: {fileID: 9051831842747251391, guid: 7b42efe18bb8b7e4ebb217347fa34286, type: 3}
+      propertyPath: objects
+      value: 
+      objectReference: {fileID: 11400000, guid: b640c07734d81854bba5198ed96f99fa, type: 2}
+    - target: {fileID: 9051831842747251391, guid: 7b42efe18bb8b7e4ebb217347fa34286, type: 3}
       propertyPath: outerWallGate
       value: 
       objectReference: {fileID: 11400000, guid: 5a41ca51f7829da4286b725c45703ef8, type: 2}

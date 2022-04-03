@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -35,7 +36,7 @@ public class GameManager : Singleton<GameManager>
     
     void CreateLevel(Level levelGraph)
     {
-        // Mapeai os vertices
+        // Mapeai as salas
         foreach (RawNode n in levelGraph.nodes)
         {
             graph.Add(
@@ -90,6 +91,26 @@ public class GameManager : Singleton<GameManager>
                         hasGate
                     );
                 }
+            }
+        }
+        // Adiciona o conteudo de cada sala
+        // TODO: colocar dentro do outro for
+        for(int j = 0; j < map.GetLength(1); j++)
+        {
+            var validYPositions = new List<int>();
+            for(int i = 0; i < map.GetLength(0); i++)
+            {
+                if (map[i, j] != null)
+                {
+                    validYPositions.Add(i);
+                }
+            }
+            if(validYPositions.Count > 0)
+            {
+                boardScript.SetupContent(
+                    (Random.Range(0, validYPositions.Count), j),
+                    levelGraph.nodes[j].data
+                );
             }
         }
     }

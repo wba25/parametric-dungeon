@@ -40,6 +40,7 @@ public class BoardManager : MonoBehaviour
     public CompoundTile outerWallTiles;
     public CompoundTile outerWallCorner;
     public CompoundTile outerWallGate;
+    public AssetData objects;
     #endregion
 
     Dictionary<TileDirection, bool> hasGates;
@@ -240,23 +241,46 @@ public class BoardManager : MonoBehaviour
 
         //Reset our list of gridpositions.
         InitialiseList ();
-
-        //Instantiate a random number of wall tiles based on minimum and maximum, at randomized positions.
-        // LayoutObjectAtRandom (wallTiles, wallCount.minimum, wallCount.maximum);
-
-        //Instantiate a random number of food tiles based on minimum and maximum, at randomized positions.
-        // LayoutObjectAtRandom (foodTiles, foodCount.minimum, foodCount.maximum);
-
-        //Determine number of enemies based on current level number, based on a logarithmic progression
-        // int enemyCount = (int)Mathf.Log(level, 2f);
-
-        //Instantiate a random number of enemies based on minimum and maximum, at randomized positions.
-        // LayoutObjectAtRandom (enemyTiles, enemyCount, enemyCount);
-
-        //Instantiate the exit tile in the upper right hand corner of our game board
-        // Instantiate (exit, new Vector3 (Columns - 1, Rows - 1, 0f), Quaternion.identity);
     }
 
+    public void SetupContent ((int x, int y) originPoint, List<NodeData> contents)
+    {
+        (float x, float y) offset = (((Rows + 6) * TileSize), ((Columns + 6) * TileSize));
+        BoardOffset = (offset.x * originPoint.x, offset.y * originPoint.y);
+
+        // Debug.Log("Conteudo na pos: " + originPoint);
+        // Cria conteudo
+        foreach (NodeData data in contents)
+        {
+            try
+            {
+                Asset obj = objects.GetAsset(data.key, data.type);
+                for (int i = 0; i < data.quantity; i++)
+                {
+                    AddObjectAtRandom(obj.prefab);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+            }
+        }
+
+        // Reset our list of gridpositions
+        InitialiseList ();
+    }
+
+    #region Métodos Do Conteudo
+    public void AddObjectAtRandom(GameObject obj)
+    {
+        Vector3 randomPosition = RandomPosition();
+        AddObject(randomPosition,obj);
+    }
+    public void AddObject(Vector3 position, GameObject obj)
+    {
+        Instantiate(obj, position, Quaternion.identity);
+    }
+    #endregion
     
     #region Métodos Utilitarios
     public float ToRealXValue(int val)
