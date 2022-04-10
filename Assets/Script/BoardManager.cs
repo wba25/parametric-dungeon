@@ -23,14 +23,6 @@ public class BoardManager : MonoBehaviour
     #region Constantes
     public const float TileSize = 1f;
     public (float x, float y) BoardOffset;
-    /*
-	{
-		get
-		{
-			return (Rows * TileSize / 4) * -1;
-		}
-	}
-    */
     public const int Columns = 8;
     public const int Rows = 8;
     #endregion
@@ -60,9 +52,19 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    public void Reset()
+    {
+        // gridPositions = new List <Vector3> ();
+    }
+
     void BoardSetup ()
     {
-        boardHolder = new GameObject ("Board").transform;
+        GameObject board = new GameObject ("Board");
+        board.transform.SetParent (
+            GameManager.Instance.levelAnchor
+        );
+        boardHolder = board.transform;
+        //transform
         for (int x = -1; x < Columns + 1; x++)
         {
             for (int y = -1; y < Rows + 1; y++)
@@ -225,7 +227,10 @@ public class BoardManager : MonoBehaviour
         {
             Vector3 randomPosition = RandomPosition();
             GameObject tileChoice = tileArray[Random.Range (0, tileArray.Length)];
-            Instantiate(tileChoice, randomPosition, Quaternion.identity);
+            GameObject obj = Instantiate(tileChoice, randomPosition, Quaternion.identity);
+            obj.transform.SetParent (
+                GameManager.Instance.levelAnchor
+            );
         }
     }
 
@@ -248,7 +253,6 @@ public class BoardManager : MonoBehaviour
         (float x, float y) offset = (((Rows + 6) * TileSize), ((Columns + 6) * TileSize));
         BoardOffset = (offset.x * originPoint.x, offset.y * originPoint.y);
 
-        // Debug.Log("Conteudo na pos: " + originPoint);
         // Cria conteudo
         foreach (NodeData data in contents)
         {
@@ -262,7 +266,9 @@ public class BoardManager : MonoBehaviour
             }
             catch (Exception e)
             {
+#if DEBUG
                 Debug.Log(e);
+#endif
             }
         }
 
@@ -278,7 +284,10 @@ public class BoardManager : MonoBehaviour
     }
     public void AddObject(Vector3 position, GameObject obj)
     {
-        Instantiate(obj, position, Quaternion.identity);
+        GameObject newObj = Instantiate(obj, position, Quaternion.identity);    
+        newObj.transform.SetParent (
+            GameManager.Instance.levelAnchor
+        );
     }
     #endregion
     

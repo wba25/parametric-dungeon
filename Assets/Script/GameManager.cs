@@ -2,36 +2,75 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using SimpleFileBrowser;
 
 public class GameManager : Singleton<GameManager>
 {
     public Camera cam;
     [SerializeField] private BoardManager boardScript;
-    
-    //private Vertex<(int x, int y)>[,] graph;
+    [SerializeField] private Player player;
+    [SerializeField] public Transform levelAnchor;
     private Dictionary<string, Vertex<(int x, int y)>> graph = new Dictionary<string, Vertex<(int x, int y)>>();
-    public TextAsset jsonLevel;
+    private TextAsset jsonLevel;
 
     void Awake()
     {
-        InitGame();
+        //InitGame();
     }
 
     void Start()
     {
-        
+        FileBrowser.SetFilters(
+            true,
+            new FileBrowser.Filter( "Text Files", ".txt" )
+        );
+        FileBrowser.SetDefaultFilter( ".txt" );
+    }
+
+    IEnumerator ShowLoadDialogCoroutine()
+	{
+		yield return FileBrowser.WaitForLoadDialog(
+            FileBrowser.PickMode.FilesAndFolders,
+            true,
+            null,
+            null,
+            "Carregar Arquivos e Pastas",
+            "Carregar"
+        );
+
+		if( FileBrowser.Success )
+		{
+			string rawFileData = FileBrowserHelpers.ReadTextFromFile( FileBrowser.Result[0] );
+            jsonLevel = new TextAsset(rawFileData);
+            UIManager.Instance.SetMainMenuActive(false);
+            InitGame();
+		}
+	}
+
+    public void LoadFile()
+    {
+        StartCoroutine( ShowLoadDialogCoroutine() );
     }
 
     void InitGame()
     {
-        //Level levelGraph = JsonUtility.FromJson<Level>(jsonLevel.text);
+        ResetGame();
         Level levelGraph = Level.CreateFromJSON(jsonLevel.text);
         CreateLevel(levelGraph);
-        /*
-        boardScript.SetupRoom((x, y));
-        */
+        player.SetActive(true);
+    }
+
+    private void ResetGame()
+    {
+        graph = new Dictionary<string, Vertex<(int x, int y)>>();
+        player.SetActive(false);
+        boardScript.Reset();
+        foreach (Transform child in levelAnchor) {
+            GameObject.Destroy(child.gameObject);
+        }
     }
     
     void CreateLevel(Level levelGraph)

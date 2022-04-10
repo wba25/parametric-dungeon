@@ -1,1 +1,100 @@
-{"abduru":"adasds","neighbors":["a","b","c"]}
+{
+  "edges": [
+    {
+      "node": "a",
+      "neighbors": [
+        "b",
+        "c"
+      ]
+    },
+    {
+      "node": "b",
+      "neighbors": [
+        "a",
+        "c"
+      ]
+    },
+    {
+      "node": "c",
+      "neighbors": [
+        "a",
+	"d"
+      ]
+    },
+    {
+      "node": "d",
+      "neighbors": [
+        "c",
+	"d"
+      ]
+    },
+    {
+      "node": "e",
+      "neighbors": [
+        "d"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "node": "a",
+      "data": [
+        {
+          "key": "pot",
+          "quantity": 5,
+          "type": "scene"
+        }
+      ]
+    },
+    {
+      "node": "b",
+      "data": [
+        {
+          "key": "key",
+          "quantity": 1,
+          "type": "collectable"
+        }
+      ]
+    },
+    {
+      "node": "c",
+      "data": [
+        {
+          "key": "heart",
+          "quantity": 2,
+          "type": "collectable"
+        }
+      ]
+    },
+    {
+      "node": "d",
+      "data": [
+        {
+          "key": "pot",
+          "quantity": 4,
+          "type": "scene"
+        },
+        {
+          "key": "heart",
+          "quantity": 2,
+          "type": "collectable"
+        }
+      ]
+    },
+    {
+      "node": "e",
+      "data": [
+        {
+          "key": "pot",
+          "quantity": 4,
+          "type": "scene"
+        },
+        {
+          "key": "heart",
+          "quantity": 2,
+          "type": "collectable"
+        }
+      ]
+    }
+  ]
+}

@@ -122,6 +122,7 @@ MonoBehaviour:
   moveSpeed: 5
   rb: {fileID: 3394028749198926783}
   anim: {fileID: 3394028749198926778}
+  playerObject: {fileID: 3394028749198926781}
 --- !u!95 &3394028749198926778
 Animator:
   serializedVersion: 3

@@ -56,6 +56,9 @@ TagManager:
   - name: Units
     uniqueID: 3344361817
     locked: 0
+  - name: SFX
+    uniqueID: 2152927287
+    locked: 0
   - name: Roof
     uniqueID: 3978017487
     locked: 0
